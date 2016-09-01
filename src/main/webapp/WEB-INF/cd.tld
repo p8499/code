@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" version="2.0">
+	<tlib-version>1.0</tlib-version>
+	<short-name>cd</short-name>
+	<!--
+	cd:draw Draw list of a particular field
+	Objects=[
+	 ('id'='1','name'='n1'),
+	 ('id'='2','name'='n2'),
+	 ('id'='3','name'='n3')
+	];
+	Field='id';
+	cd:draw(Objects,Field)=[
+	 ('id'='1'),
+	 ('id'='2'),
+	 ('id'='3')
+	];
+	-->
+	<function>
+		<name>draw</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.List draw(java.util.Collection,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>format1</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object format1(java.lang.String,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>format2</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object format2(java.lang.String,java.lang.Object,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>format3</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object format3(java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>join</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.String join(java.lang.Object,java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>lower</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object lower(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>upper</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object upper(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>lowerFirst</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object lowerFirst(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>upperFirst</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object upperFirst(java.lang.Object)</function-signature>
+	</function>
+	<!-- 
+	cd:sem Select subset by key
+	keyValues=['1','3'];
+	Objects=[
+	 ('id'='1','name'='n1'),
+	 ('id'='2','name'='n2'),
+	 ('id'='3','name'='n3')
+	];
+	KeyField='id';
+	cd:sem(keyValues,Objects,KeyField)=[
+	 ('id'='1','name'='n1'),
+	 ('id'='3','name'='n3')
+	];
+	-->
+	<function>
+		<name>sem</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object sem(java.lang.Object,java.util.Collection,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>seml</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object seml(java.lang.Object,java.util.Collection,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>sel</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.Object sel(java.lang.Object,java.util.Collection)</function-signature>
+	</function>
+	<function>
+		<name>union</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.util.List union(java.lang.Object,java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>length</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>int length(int)</function-signature>
+	</function>
+	<function>
+		<name>rel</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.util.Map rel(java.util.Map,java.util.Map,java.util.Map)</function-signature>
+	</function>
+	<function>
+		<name>rept</name>
+		<function-class>com.p8499.code.Utils</function-class>
+		<function-signature>java.lang.String rept(java.lang.String,int)</function-signature>
+	</function>
+</taglib>

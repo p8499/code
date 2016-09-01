@@ -1,0 +1,38 @@
+buildscript
+{	repositories
+	{	jcenter()
+	}
+	dependencies
+	{	classpath 'com.bmuschko:gradle-cargo-plugin:2.2.3'
+	}
+}
+
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.cargo'
+
+repositories
+{	mavenCentral()
+}
+
+dependencies
+{	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+	providedCompile 'org.apache.tomcat:tomcat-coyote:9.0.0.M9'
+	
+	runtime 'javax.servlet:jstl:1.2'
+	runtime 'org.glassfish.web:javax.servlet.jsp.jstl:1.2.4'
+	runtime 'org.apache.commons:commons-lang3:3.4'
+	runtime 'com.fasterxml.jackson.core:jackson-core:2.8.1'
+	runtime 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
+	runtime 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+}
+
+cargo
+{	containerId='tomcat8x'
+	port=8080
+	remote
+	{	hostname='localhost'
+		username='jdeuser'
+		password='helloJDE'
+		
+	}
+}
