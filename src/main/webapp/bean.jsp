@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 </c:if>@JsonInclude((JsonInclude.Include.NON_NULL))
 public class ${model['bean']['alias']} implements Bean
 {	public static final String TABLE="${model['mapper']['table']}";
+	public static final String VIEW="${model['mapper']['view']}";
 	public static final String NAME="${model['bean']['alias']}";
 <c:forEach items="${ids}" var="id">	public static final String FIELD_${cd:upper(id)}="${cd:upper(id)}";
 </c:forEach><c:forEach items="${cd:union(model['bean']['key'],model['bean']['field'])}" var="kf"><c:forEach items="${kf['in']}" var="in">	public static final ${kf['javaType']} ${cd:upper(kf['id'])}_${cd:upper(in['desc'])}=${in['value']};
@@ -42,7 +43,7 @@ public class ${model['bean']['alias']} implements Bean
 		return this;
 	}
 	
-<c:forEach items="${model['bean']['field']}" var="field" varStatus="status"><c:choose><c:when test="${field['special']['type']=='created'||field['special']['type']=='updated'}"></c:when><c:when test="${field['special']['type']=='next'}">	@NotNull(groups={Update.class})
+<c:forEach items="${model['bean']['field']}" var="field" varStatus="status"><c:choose><c:when test="${field['special']['type']=='created'||field['special']['type']=='updated'||field['special']['type']=='virtual'}"></c:when><c:when test="${field['special']['type']=='next'}">	@NotNull(groups={Update.class})
 </c:when><c:otherwise>	@NotNull(groups={Add.class,Update.class})
 </c:otherwise></c:choose><c:if test="${field['javaType']=='String'}">	@Size(max=${field['length']})
 </c:if>	//@SomeConstraint(groups={Add.class,Update.class})

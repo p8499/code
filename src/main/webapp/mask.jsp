@@ -11,6 +11,11 @@ public class ${model['bean']['maskAlias']} implements Mask
 	public ${model['bean']['maskAlias']}()
 	{	
 	}
+	@Override
+	public ${model['bean']['maskAlias']} all(boolean b)
+	{<c:forEach items="${ids}" var="id" varStatus="status"><c:if test="${!status.first}">	</c:if>	this.${id}=b;
+</c:forEach>	return this;
+	}
 <c:forEach items="${ids}" var="id" varStatus="status">	public boolean get${cd:upperFirst(id)}()
 	{	return ${id};
 	}

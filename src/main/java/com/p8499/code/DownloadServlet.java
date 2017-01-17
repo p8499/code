@@ -69,8 +69,8 @@ public class DownloadServlet extends HttpServlet
 				dirController.mkdir();
 				String fileNameController=(String)((Map<String,Object>)model.get("controller")).get("alias")+".java";
 				createFile(dirController,fileNameController,request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/controller.jsp?model="+attrName);
-				String fileNameMaskController=(String)((Map<String,Object>)model.get("controller")).get("maskAlias")+".java";
-				createFile(dirController,fileNameMaskController,request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/maskcontroller.jsp?model="+attrName);
+				String fileNameAttachmentController=(String)((Map<String,Object>)model.get("controller")).get("attachmentAlias")+".java";
+				createFile(dirController,fileNameAttachmentController,request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/attachmentcontroller.jsp?model="+attrName);
 				String fileNameCheckController=(String)((Map<String,Object>)model.get("controller")).get("checkAlias")+".java";
 				createFile(dirController,fileNameCheckController,request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/checkcontroller.jsp?model="+attrName);
 				String fileNameHtml=(String)((Map<String,Object>)model.get("html")).get("html");

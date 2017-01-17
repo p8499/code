@@ -135,7 +135,8 @@ public class Utils
 	private static <K,T> List<T> _drawByMap(Collection<Map<K,T>> objects,K prop)
 	{	List<T> result=new ArrayList<T>();
 		for(Map<K,T> map:objects)
-		{	result.add(map.get(prop));
+		{	if(map!=null)
+				result.add(map.get(prop));
 		}
 		return result;
 	}
@@ -306,7 +307,21 @@ public class Utils
 		}
 		return result;
 	}
-	
+	@SuppressWarnings("unchecked")
+	public static List<Object> minus(Object param1,Object param2)
+	{	List<Object> list1=new ArrayList<Object>();
+		List<Object> list2=new ArrayList<Object>();
+		if(param1.getClass().isArray())
+			list1.addAll(Arrays.asList((Object[])param1));
+		else if(param1 instanceof Collection)
+			list1.addAll((Collection<Object>)param1);
+		if(param2.getClass().isArray())
+			list2.addAll(Arrays.asList((Object[])param1));
+		else if(param2 instanceof Collection)
+			list2.addAll((Collection<Object>)param1);
+		list1.removeAll(list2);
+		return list1;
+	}
 	@SuppressWarnings("unchecked")
 	public static Object format1(String template,Object arg0)
 	{	if(arg0 instanceof String)

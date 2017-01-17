@@ -13,29 +13,33 @@ import ${model['bean']['androidPackage']}.${model['bean']['alias']};
 import ${model['bean']['androidMaskPackage']}.${model['bean']['maskAlias']};
 
 public class ${model['controller']['stub']} extends StubBase
-{	public static Response get(String server,String cookie,${model['bean']['key']['javaType']} ${model['bean']['key']['id']}) throws IOException
-	{	return request(server+"${model['controller']['path']}/"+${model['bean']['key']['id']},"GET",new String[]{"Cookie"},new Object[]{cookie},null,null);
+{	public static Response get(String server,String cookie,${model['bean']['key']['javaType']} ${model['bean']['key']['id']},${model['bean']['maskAlias']} mask) throws IOException,JSONException
+	{	if(mask==null)
+			return request(server+"${model['controller']['path']}/"+${model['bean']['key']['id']},"GET",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},null,null,null);
+		else
+			return request(server+"${model['controller']['path']}/"+${model['bean']['key']['id']},"GET",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},new String[]{"mask"},new Object[]{stringify(mask)},null);
 	}
-	public static Response get(String server,String cookie,${model['bean']['key']['javaType']} ${model['bean']['key']['id']},${model['bean']['maskAlias']} mask) throws IOException,JSONException
-	{	return request(server+"${model['controller']['maskPath']}/"+${model['bean']['key']['id']},"GET",new String[]{"Cookie"},new Object[]{cookie},new String[]{"mask"},new Object[]{stringify(mask)});
-	}
-	public static Response add(String server,String cookie,${model['bean']['alias']} obj) throws IOException
-	{	return request(server+"${model['controller']['path']}/"<c:if test="${!model['bean']['key']['auto']}">+obj.get${cd:upperFirst(model['bean']['key']['id'])}()</c:if>,"POST",new String[]{"Cookie"},new Object[]{cookie},new String[]{<c:choose><c:when test="${!model['bean']['key']['auto']}">${cd:join(cd:format1('"%s"',ids),',')}</c:when><c:otherwise>${cd:join(cd:format1('"%s"',fieldIds),',')}</c:otherwise></c:choose>},new Object[]{<c:choose><c:when test="${!model['bean']['key']['auto']}">${cd:join(cd:format1('obj.get%s()',cd:upperFirst(ids)),',')}</c:when><c:otherwise>${cd:join(cd:format1('obj.get%s()',cd:upperFirst(fieldIds)),',')}</c:otherwise></c:choose>});
-	}
-	public static Response update(String server,String cookie,${model['bean']['alias']} obj) throws IOException
-	{	return request(server+"${model['controller']['path']}/"+obj.get${cd:upperFirst(model['bean']['key']['id'])}(),"PUT",new String[]{"Cookie"},new Object[]{cookie},new String[]{${cd:join(cd:format1('"%s"',ids),',')}},new Object[]{${cd:join(cd:format1('obj.get%s()',cd:upperFirst(ids)),',')}});
+	public static Response add(String server,String cookie,${model['bean']['alias']} obj) throws IOException,JSONException
+	{	return request(server+"${model['controller']['path']}/"<c:if test="${!model['bean']['key']['auto']}">+obj.get${cd:upperFirst(model['bean']['key']['id'])}()</c:if>,"POST",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},null,null,stringify(obj).getBytes("UTF-8"));
 	}
 	public static Response update(String server,String cookie,${model['bean']['alias']} obj,${model['bean']['maskAlias']} mask) throws IOException,JSONException
-	{	return request(server+"${model['controller']['maskPath']}/"+obj.get${cd:upperFirst(model['bean']['key']['id'])}(),"PUT",new String[]{"Cookie"},new Object[]{cookie},new String[]{${cd:join(cd:format1('"%s"',ids),',')},"mask"},new Object[]{${cd:join(cd:format1('obj.get%s()',cd:upperFirst(ids)),',')},new Object[]{stringify(mask)}});
+	{	if(mask==null)
+			return request(server+"${model['controller']['path']}/"+obj.get${cd:upperFirst(model['bean']['key']['id'])}(),"PUT",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},null,null,stringify(obj).getBytes("UTF-8"));
+		else
+			return request(server+"${model['controller']['path']}/"+obj.get${cd:upperFirst(model['bean']['key']['id'])}(),"PUT",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},new String[]{"mask"},new Object[]{stringify(mask)},stringify(obj).getBytes("UTF-8"));
 	}
 	public static Response delete(String server,String cookie,${model['bean']['key']['javaType']} ${model['bean']['key']['id']}) throws IOException
-	{	return request(server+"${model['controller']['path']}/"+${model['bean']['key']['id']},"DELETE",new String[]{"Cookie"},new Object[]{cookie},null,null);
-	}
-	public static Response query(String server,String cookie,String filter,String orderBy,int start,int stop) throws IOException
-	{	return request(server+"${model['controller']['path']}/","GET",new String[]{"Cookie","Range"},new Object[]{cookie,"items="+start+"-"+stop},new String[]{"filter","orderBy"},new Object[]{filter,orderBy});
+	{	return request(server+"${model['controller']['path']}/"+${model['bean']['key']['id']},"DELETE",new String[]{"Cookie","Content-Type"},new Object[]{cookie,"application/json"},null,null,null);
 	}
 	public static Response query(String server,String cookie,String filter,String orderBy,int start,int stop,${model['bean']['maskAlias']} mask) throws IOException,JSONException
-	{	return request(server+"${model['controller']['maskPath']}/","GET",new String[]{"Cookie","Range"},new Object[]{cookie,"items="+start+"-"+stop},new String[]{"filter","orderBy","mask"},new Object[]{filter,orderBy,stringify(mask)});
+	{	if(mask==null)
+			return request(server+"${model['controller']['path']}/","GET",new String[]{"Cookie","Content-Type","Range"},new Object[]{cookie,"application/json","items="+start+"-"+stop},new String[]{"filter","orderBy"},new Object[]{filter,orderBy},null);
+		else
+			return request(server+"${model['controller']['path']}/","GET",new String[]{"Cookie","Content-Type","Range"},new Object[]{cookie,"application/json","items="+start+"-"+stop},new String[]{"filter","orderBy","mask"},new Object[]{filter,orderBy,stringify(mask)},null);
+	}
+	public static Response count(String server,String cookie,String filter) throws IOException,JSONException
+	{
+		return request(server+"${model['controller']['path']}/","GET",new String[]{"Cookie","Content-Type","Range"},new Object[]{cookie,"application/json","items=0--1"},new String[]{"filter","orderBy","mask"},new Object[]{filter,null,stringify(new ${model['bean']['maskAlias']}().set${cd:upperFirst(model['bean']['key']['id'])}(true))},null);
 	}
 	public static ${model['bean']['alias']} parse(String str) throws JSONException
 	{	JSONTokener tokener=new JSONTokener(str);
@@ -57,7 +61,7 @@ public class ${model['controller']['stub']} extends StubBase
 	public static String stringify(${cd:upperFirst(model['bean']['alias'])} obj) throws JSONException
 	{	return objectToJson(obj).toString();
 	}
-	public static String stringify(${model['bean']['maskAlias']} obj) throws JSONException//copy from last method
+	public static String stringify(${model['bean']['maskAlias']} obj) throws JSONException
 	{	return objectToJson(obj).toString();
 	}
 	public static String stringifyList(List${cd:format1("<%s>",cd:upperFirst(model['bean']['alias']))} objs) throws JSONException

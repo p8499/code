@@ -2,6 +2,7 @@
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import ${model['bean']['androidMaskPackage']}.${model['bean']['maskAlias']};
 
 public class ${model['bean']['alias']} implements Parcelable
 {	public static final String TABLE="${model['mapper']['table']}";
@@ -50,6 +51,18 @@ public class ${model['bean']['alias']} implements Parcelable
 	{	dest.write<c:choose><c:when test="${model['bean']['key']['javaType']=='Integer'}">Int</c:when><c:when test="${model['bean']['key']['javaType']=='String'}">String</c:when><c:when test="${model['bean']['key']['javaType']=='Double'}">Double</c:when></c:choose>(${model['bean']['key']['id']});
 <c:forEach items="${model['bean']['field']}" var="field">		dest.write<c:choose><c:when test="${field['javaType']=='Integer'}">Int</c:when><c:when test="${field['javaType']=='String'}">String</c:when><c:when test="${field['javaType']=='Double'}">Double</c:when></c:choose>(${field['id']});
 </c:forEach>	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{	return (obj instanceof ${model['bean']['alias']})?equals((${model['bean']['alias']})obj,new ${model['bean']['maskAlias']}().all(true)):false;
+	}
+	public boolean equals(${model['bean']['alias']} bean,${model['bean']['maskAlias']} mask)
+	{	if(mask==null)
+			mask=new ${model['bean']['maskAlias']}().all(true);
+<c:forEach items="${ids}" var="id">		if(mask.get${cd:upperFirst(id)}()&&!(get${cd:upperFirst(id)}()==null&&bean.get${cd:upperFirst(id)}()==null||get${cd:upperFirst(id)}()!=null&&bean.get${cd:upperFirst(id)}()!=null&&get${cd:upperFirst(id)}().equals(bean.get${cd:upperFirst(id)}())))
+			return false;
+</c:forEach>		return true;
+	}
 	
 	public static final ${model['bean']['alias']}.Creator<${model['bean']['alias']}> CREATOR=new Creator<${model['bean']['alias']}>()
     {   @Override

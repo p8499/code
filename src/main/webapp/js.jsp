@@ -61,7 +61,7 @@
 			clearInterval(interval_add_${model['bean']['key']['id']});
 		this.interval_add_${model['bean']['key']['id']}=setInterval(function(){add_${model['bean']['key']['id']}.set("value",new Date());},1000);
 </c:when><c:otherwise>		add_${model['bean']['key']['id']}.set("value","");
-</c:otherwise></c:choose></c:if><c:forEach items="${model['bean']['field']}" var="field"><c:choose><c:when test="${model['controller']['auth']['individual']&&field['special']['type']=='owner'}">		if(!wa)
+</c:otherwise></c:choose></c:if><c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']!='virtual'}"><c:choose><c:when test="${model['controller']['auth']['individual']&&field['special']['type']=='owner'}">		if(!wa)
 		{	add_${field['id']}.set("value",parent.user);
 			add_${field['id']}.set("readonly","readonly");
 			dom.byId("add_${field['id']}Assist").style.display="none";
@@ -72,7 +72,7 @@
 			clearInterval(interval_add_${field['id']});
 		this.interval_add_${field['id']}=setInterval(function(){add_${field['id']}.set("value",new Date());},1000);
 </c:when><c:otherwise>		add_${field['id']}.set("value","${field['default']}");
-</c:otherwise></c:choose></c:forEach>		addDialog.show();
+</c:otherwise></c:choose></c:if></c:forEach>		addDialog.show();
 	};
 	this.f_checkAdd=function()
 	{	var deferred=new Deferred();
@@ -105,7 +105,7 @@
 		msgAreaUpdate.refresh();
 		all([grid.store.get(id),xhr("${model['html']['controllerBase']}${model['controller']['base']}/lock",{query:{obj:"${model['controller']['auth']['name']}",id:id},handleAs:"json"})]).then(function(data)
 		{	<c:choose><c:when test="${field['dojoType']=='dijit/form/TimeTextBox'}">update_${model['bean']['key']['id']}.set("value","T"+data[0].${model['bean']['key']['id']});</c:when><c:otherwise>update_${model['bean']['key']['id']}.set("value",data[0].${model['bean']['key']['id']});</c:otherwise></c:choose>
-<c:forEach items="${model['bean']['field']}" var="field"><c:choose><c:when test="${field['dojoType']=='dijit/form/TimeTextBox'}">			update_${field['id']}.set("value","T"+data[0].${field['id']});</c:when><c:otherwise>			update_${field['id']}.set("value",data[0].${field['id']});</c:otherwise></c:choose>
+<c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']!='virtual'}"><c:choose><c:when test="${field['dojoType']=='dijit/form/TimeTextBox'}">			update_${field['id']}.set("value","T"+data[0].${field['id']});</c:when><c:otherwise>			update_${field['id']}.set("value",data[0].${field['id']});</c:otherwise></c:choose>
 <c:choose><c:when test="${model['controller']['auth']['individual']&&field['special']['type']=='owner'}">			if(!wa)
 			{	update_${field['id']}.set("readonly","readonly");
 				dom.byId("update_${field['id']}Assist").style.display="none";
@@ -113,7 +113,7 @@
 </c:when><c:when test="${field['special']['type']=='updated'}">			if(this.interval_update_${field['id']}!=null)
 				clearInterval(interval_update_${field['id']});
 			this.interval_update_${field['id']}=setInterval(function(){update_${field['id']}.set("value",new Date());},1000);
-</c:when></c:choose></c:forEach>			updateDialog.show();
+</c:when></c:choose></c:if></c:forEach>			updateDialog.show();
 			deferred.resolve(data);
 		},function(data)
 		{	msgAreaPrepare_messages.removeAll({group:"update"});

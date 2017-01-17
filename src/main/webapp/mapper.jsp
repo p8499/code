@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %><%@ page import="java.util.*" %><%@ page trimDirectiveWhitespaces="false"%><%@ page isELIgnored="false"%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%><%@ taglib uri="/WEB-INF/cd.tld" prefix="cd"%><c:set scope="request" var="model" value="${applicationScope[param['model']]}"/><c:set var="ids" value="${cd:draw(cd:union(model['bean']['key'],model['bean']['field']),'id')}"/><c:set var="fieldIds" value="${cd:draw(model['bean']['field'],'id')}"/>package ${model['mapper']['package']};
-
+<c:set var="tabIds" value="${cd:draw(cd:union(model['bean']['key'],model['bean']['field']),'id')}"/><c:forEach items="${ids}" var="id"><c:if test="${cd:sem(id,model['bean']['field'],'id')['special']['type']=='virtual'}">${String.format('',tabIds.remove(id))}</c:if></c:forEach><c:set var="tabFieldIds" value="${cd:draw(model['bean']['field'],'id')}"/><c:forEach items="${fieldIds}" var="fieldId"><c:if test="${cd:sem(fieldId,model['bean']['field'],'id')['special']['type']=='virtual'}">${String.format('',tabFieldIds.remove(fieldId))}</c:if></c:forEach>
 import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -19,41 +19,47 @@ public interface ${model['mapper']['alias']} extends BeanMapper<${model['bean'][
 	public boolean exists(@Param("${model['bean']['key']['id']}")${model['bean']['key']['javaType']} ${model['bean']['key']['id']});
 	
 	@Override
-	@Select("SELECT ${cd:join(cd:upper(ids),',')} FROM ${model['mapper']['view']} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{%s}',model['bean']['key']['id'])}")
-	public ${model['bean']['alias']} get(@Param("${model['bean']['key']['id']}")${model['bean']['key']['javaType']} ${model['bean']['key']['id']});
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='${cd:join(cd:format1('mask.%s',ids),' or ')}'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 <c:forEach items="${ids}" var="id">		+ "<if test='mask.${id}'>${cd:upper(id)}, </if>"
 </c:forEach>		+ "</trim>"
 		+ "FROM ${model['mapper']['view']} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{%s}',model['bean']['key']['id'])}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ${cd:join(cd:upper(ids),',')} FROM ${model['mapper']['view']} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{%s}',model['bean']['key']['id'])}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public ${model['bean']['alias']} getWithMask(@Param("${model['bean']['key']['id']}")${model['bean']['key']['javaType']} ${model['bean']['key']['id']},@Param("mask")Mask mask);
+	public ${model['bean']['alias']} get(@Param("${model['bean']['key']['id']}")${model['bean']['key']['javaType']} ${model['bean']['key']['id']},@Param("mask")Mask mask);
 	
 	@Override
-<c:choose><c:when test="${model['bean']['key']['auto']}">	@Insert("INSERT INTO ${model['mapper']['table']} (${cd:join(cd:upper(fieldIds),',')}) VALUES (${cd:join(cd:format1('#{bean.%s}',fieldIds),',')})")
+<c:choose><c:when test="${model['bean']['key']['auto']}">	@Insert("INSERT INTO ${model['mapper']['table']} (${cd:join(cd:upper(tabFieldIds),',')}) VALUES (${cd:join(cd:format1('#{bean.%s}',tabFieldIds),',')})")
 	@Options(useGeneratedKeys=true,keyProperty="bean.${model['bean']['key']['id']}")
-</c:when><c:otherwise>	@Insert("INSERT INTO ${model['mapper']['table']} (${cd:join(cd:upper(ids),',')}) VALUES (${cd:join(cd:format1('#{bean.%s}',ids),',')})")
+</c:when><c:otherwise>	@Insert("INSERT INTO ${model['mapper']['table']} (${cd:join(cd:upper(tabIds),',')}) VALUES (${cd:join(cd:format1('#{bean.%s}',tabIds),',')})")
 </c:otherwise></c:choose>	public void add(@Param("bean")${model['bean']['alias']} bean);
 	
 	@Override
-	@Update("UPDATE ${model['mapper']['table']} SET ${cd:join(cd:format2('%s=#{bean.%s}',cd:upper(fieldIds),fieldIds),',')} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{bean.%s}',model['bean']['key']['id'])}")
-	public void update(@Param("bean")${model['bean']['alias']} bean);
-	
-	@Override
 	@Update("<script>"
-		+ "<if test='${cd:join(cd:format1('mask.%s',fieldIds),' or ')}'>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
+		+ "<if test='${cd:join(cd:format1('mask.%s',tabFieldIds),' or ')}'>"
 		+ "UPDATE ${model['mapper']['table']} "
 		+ "<set>"
-<c:forEach items="${fieldIds}" var="id">		+ "<if test='mask.${id}'>${cd:upper(id)}=${String.format('#{bean.%s}',id)}, </if>"
+<c:forEach items="${tabFieldIds}" var="id">		+ "<if test='mask.${id}'>${cd:upper(id)}=${String.format('#{bean.%s}',id)}, </if>"
 </c:forEach>		+ "</set>"
 		+ "WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{bean.%s}',model['bean']['key']['id'])}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE ${model['mapper']['table']} SET ${cd:join(cd:format2('%s=#{bean.%s}',cd:upper(tabFieldIds),tabFieldIds),',')} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{bean.%s}',model['bean']['key']['id'])}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")${model['bean']['alias']} bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")${model['bean']['alias']} bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM ${model['mapper']['table']} WHERE ${fn:toUpperCase(model['bean']['key']['id'])}=${String.format('#{%s}',model['bean']['key']['id'])}")
@@ -61,24 +67,22 @@ public interface ${model['mapper']['alias']} extends BeanMapper<${model['bean'][
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT ${cd:join(cd:upper(ids),',')} FROM ${model['mapper']['view']} "
-		+ "<if test='filter!=null'>WHERE ${'${filter}'} </if>"
-		+ "<if test='order!=null'>ORDER BY ${'${order}'} </if>"
-		+ "LIMIT ${'#{count}'} OFFSET ${'#{start}'}"
-		+ "</script>")
-	public List<${model['bean']['alias']}> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 <c:forEach items="${ids}" var="id">		+ "<if test='mask.${id}'>${cd:upper(id)}, </if>"
 </c:forEach>		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ${cd:join(cd:upper(ids),',')} "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM ${model['mapper']['view']} "
 		+ "<if test='filter!=null'>WHERE ${'${filter}'} </if>"
 		+ "<if test='order!=null'>ORDER BY ${'${order}'} </if>"
 		+ "LIMIT ${'#{count}'} OFFSET ${'#{start}'}"
 		+ "</script>")
-	public List<${model['bean']['alias']}> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<${model['bean']['alias']}> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -87,7 +91,7 @@ public interface ${model['mapper']['alias']} extends BeanMapper<${model['bean'][
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-<c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']=='next'}">	@Select("SELECT if(MAX(${field['id']}),null,0)+${field['special']['step']} FROM ${model['mapper']['view']}<c:if test="${!empty field['special']['scope']}"> WHERE ${cd:join(cd:format2('%s=#{%s}',field['special']['scope'],field['special']['scope']),' AND ')}</c:if>")
+<c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']=='next'}">	@Select("SELECT COALESCE(MAX(${field['id']}),0)+${field['special']['step']} FROM ${model['mapper']['view']}<c:if test="${!empty field['special']['scope']}"> WHERE ${cd:join(cd:format2('%s=#{%s}',field['special']['scope'],field['special']['scope']),' AND ')}</c:if>")
 	public ${field['javaType']} next${cd:upperFirst(field['id'])}(${cd:join(cd:format3('@Param("%s")%s %s',field['special']['scope'],cd:draw(cd:sem(field['special']['scope'],cd:union(model['bean']['key'],model['bean']['field']),'id'),'javaType'),field['special']['scope']),',')});
 	
 </c:if></c:forEach>	@Override

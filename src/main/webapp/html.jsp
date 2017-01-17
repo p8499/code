@@ -94,7 +94,7 @@
 <c:if test="${!empty _referencing}">							<td><a id="add_${model['bean']['key']['id']}Assist" class="assist" href="#" onclick="f_assistBegin([${cd:join(cd:format1('add_%s',_referencing['domestic']),',')}],[${cd:join(cd:format1('\'%s\'',_referencing['foreign']),',')}],${_referencing['alias']}Dialog,${_referencing['alias']}Grid)" onmouseover="this.style.background='url(img/assistmo.gif)'" onmouseout="this.style.background='url(img/assist.gif)'"></a></td>
 </c:if><c:if test="${model['bean']['key']['special']['type']=='password'}"><td><a class="encrypt" href="#" onclick="f_encrypt(add_${model['bean']['key']['id']})" onmouseover="this.style.background='url(img/encryptmo.bmp)'" onmouseout="this.style.background='url(img/encrypt.bmp)'"></a></td>
 </c:if>						</tr>
-</c:if><c:forEach items="${model['bean']['field']}" var="field">						<tr><c:set var="_referencing" value="${cd:seml(field['id'],model['mapper']['referencing'],'domestic')}"/>
+</c:if><c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']!='virtual'}">						<tr><c:set var="_referencing" value="${cd:seml(field['id'],model['mapper']['referencing'],'domestic')}"/>
 							<td><label for="${field['id']}">${field['name']}</label></td>
 							<td>
 <c:choose><c:when test="${field['dojoType']=='dijit/form/TextBox'||field['dojoType']=='dijit/form/NumberTextBox'||field['dojoType']=='dijit/form/Textarea'}">								<input id="add_${field['id']}" name="${field['id']}" type="text" data-dojo-type="${field['dojoType']}" data-dojo-id="add_${field['id']}" <c:if test="${field['special']['type']!='next'&&field['special']['type']!='cache'}">required="required" </c:if><c:if test="${field['scale']>0}">constraints="{pattern:'${cd:rept('0',field['length']-field['scale']-1)}.${cd:rept('0',field['scale'])}'}" </c:if>maxlength="${field['length']}"/>
@@ -108,7 +108,7 @@
 <c:if test="${!empty _referencing}">							<td><a id="add_${field['id']}Assist" class="assist" href="#" onclick="f_assistBegin([${cd:join(cd:format1('add_%s',_referencing['domestic']),',')}],[${cd:join(cd:format1('\'%s\'',_referencing['foreign']),',')}],${_referencing['alias']}Dialog,${_referencing['alias']}Grid)" onmouseover="this.style.background='url(img/assistmo.gif)'" onmouseout="this.style.background='url(img/assist.gif)'"></a></td>
 </c:if><c:if test="${field['special']['type']=='password'}"><td><a class="encrypt" href="#" onclick="f_encrypt(add_${field['id']})" onmouseover="this.style.background='url(img/encryptmo.bmp)'" onmouseout="this.style.background='url(img/encrypt.bmp)'"></a></td>
 </c:if>						</tr>
-</c:forEach>					</table>
+</c:if></c:forEach>					</table>
 				</div>
 				<div class="dijitDialogPaneActionBar">
 					<button id="addSubmit" type="submit" data-dojo-type="dijit/form/Button" data-dojo-id="addSubmit" data-dojo-props="iconClass:'dijitEditorIcon dijitEditorIconSave'">確定</button>
@@ -134,7 +134,7 @@
 							<td><label for="${model['bean']['key']['id']}">${model['bean']['key']['name']}</label></td>
 							<td><input id="update_${model['bean']['key']['id']}" name="${model['bean']['key']['id']}" type="text" data-dojo-type="${model['bean']['key']['dojoType']}" data-dojo-id="update_${model['bean']['key']['id']}" required="required" <c:if test="${model['bean']['key']['scale']>0}">constraints="{pattern:'${cd:rept('0',model['bean']['key']['length']-model['bean']['key']['scale']-1)}.${cd:rept('0',model['bean']['key']['scale'])}'}" </c:if>maxlength="${model['bean']['key']['length']}" readonly="readonly"/></td>
 						</tr>
-<c:forEach items="${model['bean']['field']}" var="field">						<tr><c:set var="_referencing" value="${cd:seml(field['id'],model['mapper']['referencing'],'domestic')}"/>
+<c:forEach items="${model['bean']['field']}" var="field"><c:if test="${field['special']['type']!='virtual'}">						<tr><c:set var="_referencing" value="${cd:seml(field['id'],model['mapper']['referencing'],'domestic')}"/>
 							<td><label for="${field['id']}">${field['name']}</label></td>
 							<td>
 <c:choose><c:when test="${field['dojoType']=='dijit/form/TextBox'||field['dojoType']=='dijit/form/NumberTextBox'||field['dojoType']=='dijit/form/Textarea'}">								<input id="update_${field['id']}" name="${field['id']}" type="text" data-dojo-type="${field['dojoType']}" data-dojo-id="update_${field['id']}" <c:if test="${field['special']['type']!='cache'}">required="required" </c:if><c:if test="${field['scale']>0}">constraints="{pattern:'${cd:rept('0',field['length']-field['scale']-1)}.${cd:rept('0',field['scale'])}'}" </c:if>maxlength="${field['length']}"/>
@@ -148,7 +148,7 @@
 <c:if test="${!empty _referencing}">							<td><a id="update_${field['id']}Assist" class="assist" href="#" onclick="f_assistBegin([${cd:join(cd:format1('update_%s',_referencing['domestic']),',')}],[${cd:join(cd:format1('\'%s\'',_referencing['foreign']),',')}],${_referencing['alias']}Dialog,${_referencing['alias']}Grid)" onmouseover="this.style.background='url(img/assistmo.gif)'" onmouseout="this.style.background='url(img/assist.gif)'"></a></td>
 </c:if><c:if test="${field['special']['type']=='password'}"><td><a class="encrypt" href="#" onclick="f_encrypt(update_${field['id']})" onmouseover="this.style.background='url(img/encryptmo.bmp)'" onmouseout="this.style.background='url(img/encrypt.bmp)'"></a></td>
 </c:if>						</tr>
-</c:forEach>					</table>
+</c:if></c:forEach>					</table>
 				</div>
 				<div class="dijitDialogPaneActionBar">
 					<button id="updateSubmit" type="submit" data-dojo-type="dijit/form/Button" data-dojo-id="updateSubmit" data-dojo-props="iconClass:'dijitEditorIcon dijitEditorIconSave'">確定</button>

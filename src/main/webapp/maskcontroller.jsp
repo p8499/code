@@ -46,7 +46,8 @@ public class ${model['controller']['maskAlias']} extends MaskControllerBase<${mo
 	}
 	@RequestMapping(value="/{${model['bean']['key']['id']}}",method=RequestMethod.PUT)
 	public String updateWithMask(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestBody @Validated({Update.class}) ${model['bean']['alias']} bean,BindingResult result,@RequestParam("mask")String mask) throws IOException
-	{	if(result.hasErrors())
+	{	${model['bean']['maskAlias']} maskObj=(${model['bean']['maskAlias']})jackson.readValue(mask,${model['bean']['maskAlias']}.class);
+		if(${cd:join(cd:format2('maskObj.get%s()&&result.getFieldErrorCount(\"%s\")>0',cd:upperFirst(ids),ids),'||')})
 			return finish(result.toString(),response,HttpURLConnection.HTTP_BAD_REQUEST);
 		if(getUser(session)==null)
 			return finish("",response,HttpURLConnection.HTTP_UNAUTHORIZED);
@@ -64,8 +65,7 @@ public class ${model['controller']['maskAlias']} extends MaskControllerBase<${mo
 			bean.set${cd:upperFirst(owner['id'])}(getUser(session));
 </c:if><c:forEach items="${model['bean']['field']}" var="field"><c:choose><c:when test="${field['special']['type']=='created'}">		bean.set${cd:upperFirst(field['id'])}(origBean.get${cd:upperFirst(field['id'])}());
 </c:when><c:when test="${field['special']['type']=='updated'}"><c:choose><c:when test="${field['dojoType']=='dijit/form/DateTextBox'}">		bean.set${cd:upperFirst(field['id'])}(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));</c:when><c:when test="${field['dojoType']=='dijit/form/TimeTextBox'}">		bean.set${cd:upperFirst(field['id'])}(new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date()));</c:when></c:choose>
-</c:when></c:choose></c:forEach>		${model['bean']['maskAlias']} maskObj=(${model['bean']['maskAlias']})jackson.readValue(mask,${model['bean']['maskAlias']}.class);
-		getListener().beforeUpdateWithMask(bean,maskObj);
+</c:when></c:choose></c:forEach>		getListener().beforeUpdateWithMask(bean,maskObj);
 		((${model['mapper']['alias']})bMapper).updateWithMask(bean,maskObj);
 		getListener().afterUpdateWithMask(bean,maskObj);
 		return finish("",response,HttpURLConnection.HTTP_OK);

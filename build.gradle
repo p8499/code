@@ -9,6 +9,8 @@ buildscript
 
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.cargo'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 repositories
 {	mavenCentral()
@@ -16,7 +18,7 @@ repositories
 
 dependencies
 {	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
-	providedCompile 'org.apache.tomcat:tomcat-coyote:9.0.0.M9'
+	providedCompile 'org.apache.tomcat:tomcat-coyote:9.0.0.M10'
 	
 	runtime 'javax.servlet:jstl:1.2'
 	runtime 'org.glassfish.web:javax.servlet.jsp.jstl:1.2.4'
@@ -28,7 +30,7 @@ dependencies
 
 cargo
 {	containerId='tomcat8x'
-	port=8080
+	port=80
 	remote
 	{	hostname='localhost'
 		username='jdeuser'

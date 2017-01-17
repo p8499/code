@@ -60,7 +60,7 @@ public class ${model['controller']['checkAlias']} extends RestCheckControllerBas
 </c:otherwise></c:choose>			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("${model['controller']['auth']['name']}K"+bean.get${cd:upperFirst(model['bean']['key']['id'])}())&&!reserved.isReservedBy("${model['controller']['auth']['name']}K"+bean.get${cd:upperFirst(model['bean']['key']['id'])}(),session.getId()))
 			return finish("",response,423);
-		${model['bean']['alias']} origBean=((${model['mapper']['alias']})bMapper).get(bean.get${cd:upperFirst(model['bean']['key']['id'])}());
+		${model['bean']['alias']} origBean=((${model['mapper']['alias']})bMapper).get(bean.get${cd:upperFirst(model['bean']['key']['id'])}(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 <c:if test="${model['controller']['auth']['individual']}">		if(!${model['controller']['auth']['name']}_wa&&!origBean.get${cd:upperFirst(owner['id'])}().equals(getUser(session)))
@@ -86,7 +86,7 @@ public class ${model['controller']['checkAlias']} extends RestCheckControllerBas
 </c:otherwise></c:choose>			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("${model['controller']['auth']['name']}K"+${model['bean']['key']['id']}))
 			return finish("",response,423);
-		${model['bean']['alias']} origBean=((${model['mapper']['alias']})bMapper).get(${model['bean']['key']['id']});
+		${model['bean']['alias']} origBean=((${model['mapper']['alias']})bMapper).get(${model['bean']['key']['id']},null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 <c:if test="${model['controller']['auth']['individual']}">		if(!${model['controller']['auth']['name']}_wa&&!origBean.get${cd:upperFirst(owner['id'])}().equals(getUser(session)))
